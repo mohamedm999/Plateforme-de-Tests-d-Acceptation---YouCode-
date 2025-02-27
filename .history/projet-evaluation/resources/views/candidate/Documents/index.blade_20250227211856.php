@@ -1,0 +1,2 @@
+ent')->nullable();
+$table->timestamps();

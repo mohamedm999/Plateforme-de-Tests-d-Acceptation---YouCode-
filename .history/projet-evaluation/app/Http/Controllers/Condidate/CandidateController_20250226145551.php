@@ -1,0 +1,119 @@
+<?php
+namespace App\Http\Controllers\Condidate;
+
+
+
+
+
+
+class CandidateController extends Controller
+{
+    /**
+     * Display a listing of candidates.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        $candidates = Candidate::all();
+        return view('candidates.index', compact('candidates'));
+    }
+
+    /**
+     * Show the form for creating a new candidate.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        return view('candidates.create');
+    }
+
+    /**
+     * Store a newly created candidate in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:candidates',
+            'phone' => 'required|string|max:20',
+            // Add other validation rules as needed
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        Candidate::create($request->all());
+
+        return redirect()->route('candidates.index')->with('success', 'Candidate created successfully');
+    }
+
+    /**
+     * Display the specified candidate.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        $candidate = Candidate::findOrFail($id);
+        return view('candidates.show', compact('candidate'));
+    }
+
+    /**
+     * Show the form for editing the specified candidate.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        $candidate = Candidate::findOrFail($id);
+        return view('candidates.edit', compact('candidate'));
+    }
+
+    /**
+     * Update the specified candidate in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:candidates,email,'.$id,
+            'phone' => 'required|string|max:20',
+            // Add other validation rules as needed
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $candidate = Candidate::findOrFail($id);
+        $candidate->update($request->all());
+
+        return redirect()->route('candidates.index')->with('success', 'Candidate updated successfully');
+    }
+
+    /**
+     * Remove the specified candidate from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        $candidate = Candidate::findOrFail($id);
+        $candidate->delete();
+
+        return redirect()->route('candidates.index')->with('success', 'Candidate deleted successfully');
+    }
+}
