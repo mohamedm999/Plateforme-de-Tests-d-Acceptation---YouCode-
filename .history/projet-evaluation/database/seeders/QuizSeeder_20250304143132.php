@@ -88,8 +88,6 @@ class QuizSeeder extends Seeder
             'question_type' => 'single',
             'points' => 10
         ]);
-
-        
         Option::create(['question_id' => $q5->id, 'option_text' => 'var', 'is_correct' => false]);
         Option::create(['question_id' => $q5->id, 'option_text' => 'let', 'is_correct' => true]);
         Option::create(['question_id' => $q5->id, 'option_text' => 'variable', 'is_correct' => false]);
